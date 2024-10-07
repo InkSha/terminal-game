@@ -1,4 +1,8 @@
+use map::area;
 use std::io::{self, Write};
+
+mod json;
+mod map;
 
 // 地图为文件结构形式
 // e.g. 主世界/北部大陆/人类帝国/边疆/边境城镇
@@ -6,7 +10,10 @@ use std::io::{self, Write};
 // e.g. /../边境城镇/酒馆.build, /../边境城镇/酒馆/服务员.npc, /../边境城镇/城门.build
 
 fn main() {
+    area::Area::create_from_file("data.json");
+
     loop {
+        break;
         print!("> ");
         io::stdout().flush().unwrap(); // 刷新输出以显示提示
         let mut input = String::new();
@@ -17,6 +24,7 @@ fn main() {
         match command {
             "look" => println!("你环顾四周，看到了一片荒野。"),
             "north" => println!("你向北移动了一段距离。"),
+            "init" => {}
             "quit" => {
                 println!("退出游戏...");
                 break;
