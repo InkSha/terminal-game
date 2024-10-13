@@ -1,5 +1,5 @@
-﻿using entity;
-using map;
+﻿using Core.Map;
+using Core.Entity;
 
 public class Program
 {
@@ -80,24 +80,20 @@ public class Program
           break;
       }
     }
-
   }
 
   public static void CreateWorld()
   {
-    Area main = new("main world");
-    Area land = new("land");
-    Area sea = new("sea");
-    Area forest = new("forest");
-    Area snow = new("snow");
-    Area island = new("island");
-    Area town = new("town");
-
-    sea.Push([island]);
-    land.Push([forest, snow, town]);
-    main.Push([land, sea]);
-
+    Area main = Area.LoadData(new("Main World")
+    {
+      Child = [
+        new("land"){
+          Child = [new("forest"), new("snow"), new("town"),]
+        },
+        new("sea"){ Child = [new("island")] }
+      ]
+    });
     main.Init();
-    main.ToFile();
+    main.ToFile(main.Name);
   }
 }
