@@ -1,8 +1,8 @@
 use map::area;
 use std::io::{self, Write};
 
-mod json;
 mod map;
+mod shared;
 
 // 地图为文件结构形式
 // e.g. 主世界/北部大陆/人类帝国/边疆/边境城镇
@@ -13,7 +13,7 @@ fn main() {
     area::Area::create_from_file("data.json");
 
     loop {
-        break;
+        // break;
         print!("> ");
         io::stdout().flush().unwrap(); // 刷新输出以显示提示
         let mut input = String::new();
