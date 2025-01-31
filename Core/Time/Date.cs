@@ -10,7 +10,7 @@ public class Date
   public int month;
   public int day;
   public int MonthRadix { get; set; } = 12;
-  public int DayRadix { get; set; } = 31;
+  public int DayRadix { get; set; } = 30;
   public char Separator { get; set; } = '/';
   public string Label { get; set; } = "日期";
 
