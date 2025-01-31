@@ -9,11 +9,11 @@ public class Json<T> where T : Json<T>
     return JsonSerializer.Serialize(this);
   }
 
-  public static T? FromFile(string filename)
+  public static T? FromFile(string filename, T? defaultValue = null)
   {
     try
     {
-      string json = File.ReadAllText(filename);
+      string json = File.ReadAllText(filename, System.Text.Encoding.UTF8);
 
       if (!string.IsNullOrEmpty(json))
       {
@@ -25,7 +25,7 @@ public class Json<T> where T : Json<T>
       Console.WriteLine($"Error reading or deserializing file: {ex.Message}");
     }
 
-    return null;
+    return defaultValue;
   }
 
   public void ToFile(string name)
@@ -34,7 +34,7 @@ public class Json<T> where T : Json<T>
     {
       string content = ToJson();
       Console.WriteLine(content);
-      File.WriteAllText($"{name}.json", content);
+      File.WriteAllText($"{name}.json", content, System.Text.Encoding.UTF8);
     }
     catch (Exception ex)
     {
