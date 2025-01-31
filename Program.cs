@@ -1,13 +1,32 @@
 ﻿using Core.Map;
 using Core.GUI;
+using Core.Time;
 
 public class Program
 {
   public static void Main()
   {
+    Time time = new("23:58:56");
+    Date date = new();
+
+    GUIItem timeItem = new("时间", time.ToString());
+    GUIItem dateItem = new("日期", date.ToString());
+
+    time.TimeChange += (Time time) =>
+    {
+      timeItem.Data = time.ToString();
+    };
+
+    time.DayAdd += date.Increment;
+
+    date.DateChange += (Date date) =>
+    {
+      dateItem.Data = date.ToString();
+    };
+
     GUI gui = new([
-      new("时间", "12:00:00"),
-      new("日期", "3000/01/01"),
+      timeItem,
+      dateItem,
       new("天气", "晴朗"),
       new("任务", "无"),
       new("位面", "主世界"),
@@ -19,7 +38,25 @@ public class Program
       new("物品", "无"),
       new("行为", "对话、查看"),
     ]);
-    gui.PrintUI();
+    bool loop = true;
+
+    int tickSec = 1;
+
+    while (loop)
+    {
+      time.Tick(tickSec);
+      gui.PrintUI();
+      Console.WriteLine("怎么做?");
+      string input = string.Format($"{Console.ReadLine()}");
+      if (input.ToLower().StartsWith('q'))
+      {
+        loop = false;
+      }
+      else if (int.TryParse(input, out int num))
+      {
+        tickSec = num;
+      }
+    }
   }
 
   public static void Start()
