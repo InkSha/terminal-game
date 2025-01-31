@@ -1,8 +1,6 @@
-using Core.GUI;
+namespace Core;
 
-namespace Core.Time;
-
-public class Time
+public class Time : IGUIItem
 {
 
   public delegate void TimeChangeHandler(Time time);
@@ -22,15 +20,40 @@ public class Time
   public string Min { get => AddZero(min); }
   public string Sec { get => AddZero(sec); }
 
+  public string Data
+  {
+    get => ToString();
+    set => ChangeTime(value);
+  }
+
   public Time(int hour, int min, int sec)
   {
     this.hour = hour;
     this.min = min;
     this.sec = sec;
+    JudgeTime();
   }
 
   public Time(string time = "00:00:00")
   {
+    ChangeTime(time);
+  }
+
+  private void JudgeTime()
+  {
+    if (hour >= HourRadix) hour = 0;
+    if (min >= MinRadix) min = 0;
+    if (sec >= SecRadix) sec = 0;
+
+    Day = 1;
+  }
+
+  public void ChangeTime(string time = "00:00:00")
+  {
+    if (time.Equals(""))
+    {
+      return;
+    }
     string hour = "";
     string min = "";
     string sec = "";
@@ -61,9 +84,12 @@ public class Time
         pointer++;
       }
     }
+
     this.hour = int.Parse(hour);
     this.min = int.Parse(min);
     this.sec = int.Parse(sec);
+    JudgeTime();
+    TimeChange?.Invoke(this);
   }
 
   public static string AddZero(int time)
@@ -108,17 +134,5 @@ public class Time
   public override string ToString()
   {
     return $"{Hour}{Separator}{Min}{Separator}{Sec}";
-  }
-
-  public GUIItem ToGUIItem()
-  {
-    GUIItem item = new(Label, ToString());
-
-    TimeChange += (time) =>
-    {
-      item.Data = time.ToString();
-    };
-
-    return item;
   }
 }

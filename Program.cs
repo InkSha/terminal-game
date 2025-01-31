@@ -1,49 +1,10 @@
-﻿using Core.Map;
-using Core.GUI;
-using Core.Time;
-
+﻿using Core;
 public class Program
 {
   public static void Main()
   {
-    Time time = new("23:58:56");
-    Date date = new();
-
-    time.DayAdd += date.Increment;
-
-    GUI gui = new([
-      time.ToGUIItem(),
-      date.ToGUIItem(),
-      new("天气", "晴朗"),
-      new("任务", "无"),
-      new("位面", "主世界"),
-      new("阵营", "无"),
-      new("地区", "华夏未央市市区北部"),
-      new("势力", "华夏"),
-      new("场景", "市区广场"),
-      new("人物", "张三、李四、王五、赵六"),
-      new("物品", "无"),
-      new("行为", "对话、查看"),
-    ]);
-    bool loop = true;
-
-    int tickSec = 1;
-
-    while (loop)
-    {
-      time.Tick(tickSec);
-      gui.PrintUI();
-      Console.WriteLine("怎么做?");
-      string input = string.Format($"{Console.ReadLine()}");
-      if (input.ToLower().StartsWith('q'))
-      {
-        loop = false;
-      }
-      else if (int.TryParse(input, out int num))
-      {
-        tickSec = num;
-      }
-    }
+    Game game = new();
+    game.Start();
   }
 
   public static void Start()

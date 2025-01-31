@@ -1,7 +1,7 @@
+namespace Core;
+
 using System.Reflection.Metadata;
 using Utils;
-
-namespace Core.Map;
 
 public struct AreaData(string name)
 {

@@ -34,7 +34,7 @@ public class Json<T> where T : Json<T>
     {
       string content = ToJson();
       Console.WriteLine(content);
-      File.WriteAllText($"{name}.json", content, System.Text.Encoding.UTF8);
+      File.WriteAllText(name, content, System.Text.Encoding.UTF8);
     }
     catch (Exception ex)
     {

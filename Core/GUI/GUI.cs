@@ -1,19 +1,29 @@
-namespace Core.GUI;
+namespace Core;
 
-public class GUIItem(string label, string data)
+public interface IGUIItem
+{
+  public string Label { get; set; }
+  public string Data { get; set; }
+}
+
+public class GUIItem(string label, string data) : IGUIItem
 {
   public string Label { get; set; } = label;
   public string Data { get; set; } = data;
-
 }
 
-public class GUI(List<GUIItem> list)
+public class GUI(List<IGUIItem> list)
 {
-  private readonly List<GUIItem> items = list;
+  private readonly List<IGUIItem> items = list;
 
-  public void Add(GUIItem item)
+  public void Add(IGUIItem item)
   {
     items.Add(item);
+  }
+
+  public void Add(List<IGUIItem> list)
+  {
+    items.AddRange(list);
   }
 
   public void RemoveItem(string label)
@@ -26,7 +36,7 @@ public class GUI(List<GUIItem> list)
     items.Clear();
   }
 
-  public void ToggleGUI(List<GUIItem> list)
+  public void ToggleGUI(List<IGUIItem> list)
   {
     items.Clear();
     items.AddRange(list);

@@ -1,9 +1,9 @@
-using Core.GUI;
+namespace Core;
 
-namespace Core.Time;
-
-public class Date
+public class Date : IGUIItem
 {
+  public const int DEFAULT_YEAR = 2200;
+
   public delegate void DateChangeHandler(Date date);
   public DateChangeHandler? DateChange { get; set; }
   public int year;
@@ -18,15 +18,38 @@ public class Date
   public string Month { get => AddZero(month); }
   public string Day { get => AddZero(day); }
 
+  public string Data
+  {
+    get => ToString();
+    set => ChangeDate(value);
+  }
+
   public Date(int year, int month, int day)
   {
     this.year = year;
     this.month = month;
     this.day = day;
+    JudgeDate();
   }
 
   public Date(string date = "2200/01/01")
   {
+    ChangeDate(date);
+  }
+
+  private void JudgeDate()
+  {
+    if (month > MonthRadix) month = 1;
+    if (day > DayRadix) day = 1;
+    if (year < DEFAULT_YEAR) year = DEFAULT_YEAR;
+  }
+
+  public void ChangeDate(string date = "2200/01/01")
+  {
+    if (date.Equals(""))
+    {
+      return;
+    }
     string year = "";
     string month = "";
     string day = "";
@@ -63,6 +86,8 @@ public class Date
     this.year = int.Parse(year);
     this.month = int.Parse(month);
     this.day = int.Parse(day);
+    JudgeDate();
+    DateChange?.Invoke(this);
   }
 
   public static string AddZero(int date)
@@ -98,17 +123,5 @@ public class Date
   public override string ToString()
   {
     return $"{Year}{Separator}{Month}{Separator}{Day}";
-  }
-
-  public GUIItem ToGUIItem()
-  {
-    GUIItem item = new(Label, ToString());
-
-    DateChange += (date) =>
-    {
-      item.Data = date.ToString();
-    };
-
-    return item;
   }
 }
