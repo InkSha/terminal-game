@@ -4,9 +4,16 @@ namespace Utils;
 
 public class Json<T> where T : Json<T>
 {
-  public string ToJson()
+  private static readonly JsonSerializerOptions serializerOptions = new()
   {
-    return JsonSerializer.Serialize(this);
+    IncludeFields = true
+  };
+
+  public string ToJson(JsonSerializerOptions? options = null)
+  {
+    options ??= serializerOptions;
+    string content = JsonSerializer.Serialize((T)this, options);
+    return content;
   }
 
   public static T? FromFile(string filename, T? defaultValue = null)
@@ -17,7 +24,7 @@ public class Json<T> where T : Json<T>
 
       if (!string.IsNullOrEmpty(json))
       {
-        return JsonSerializer.Deserialize<T>(json);
+        return JsonSerializer.Deserialize<T>(json, serializerOptions);
       }
     }
     catch (Exception ex)
