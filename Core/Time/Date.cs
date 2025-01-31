@@ -1,17 +1,18 @@
+using Core.GUI;
+
 namespace Core.Time;
 
 public class Date
 {
   public delegate void DateChangeHandler(Date date);
   public DateChangeHandler? DateChange { get; set; }
-
   public int year;
   public int month;
   public int day;
   public int MonthRadix { get; set; } = 12;
   public int DayRadix { get; set; } = 31;
-
   public char Separator { get; set; } = '/';
+  public string Label { get; set; } = "日期";
 
   public string Year { get => AddZero(year); }
   public string Month { get => AddZero(month); }
@@ -97,5 +98,17 @@ public class Date
   public override string ToString()
   {
     return $"{Year}{Separator}{Month}{Separator}{Day}";
+  }
+
+  public GUIItem ToGUIItem()
+  {
+    GUIItem item = new(Label, ToString());
+
+    DateChange += (date) =>
+    {
+      item.Data = date.ToString();
+    };
+
+    return item;
   }
 }

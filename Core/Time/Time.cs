@@ -1,3 +1,5 @@
+using Core.GUI;
+
 namespace Core.Time;
 
 public class Time
@@ -7,7 +9,6 @@ public class Time
   public delegate void DayAddHandler(int day);
   public TimeChangeHandler? TimeChange { get; set; }
   public DayAddHandler? DayAdd { get; set; }
-
   public int hour = 0;
   public int min = 0;
   public int sec = 0;
@@ -16,7 +17,7 @@ public class Time
   public int HourRadix { get; set; } = 24;
   public int Day { get; set; } = 1;
   public char Separator { get; set; } = ':';
-
+  public string Label { get; set; } = "时间";
   public string Hour { get => AddZero(hour); }
   public string Min { get => AddZero(min); }
   public string Sec { get => AddZero(sec); }
@@ -107,5 +108,17 @@ public class Time
   public override string ToString()
   {
     return $"{Hour}{Separator}{Min}{Separator}{Sec}";
+  }
+
+  public GUIItem ToGUIItem()
+  {
+    GUIItem item = new(Label, ToString());
+
+    TimeChange += (time) =>
+    {
+      item.Data = time.ToString();
+    };
+
+    return item;
   }
 }

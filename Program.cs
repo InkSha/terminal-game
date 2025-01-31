@@ -9,24 +9,11 @@ public class Program
     Time time = new("23:58:56");
     Date date = new();
 
-    GUIItem timeItem = new("时间", time.ToString());
-    GUIItem dateItem = new("日期", date.ToString());
-
-    time.TimeChange += (Time time) =>
-    {
-      timeItem.Data = time.ToString();
-    };
-
     time.DayAdd += date.Increment;
 
-    date.DateChange += (Date date) =>
-    {
-      dateItem.Data = date.ToString();
-    };
-
     GUI gui = new([
-      timeItem,
-      dateItem,
+      time.ToGUIItem(),
+      date.ToGUIItem(),
       new("天气", "晴朗"),
       new("任务", "无"),
       new("位面", "主世界"),
