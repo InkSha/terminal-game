@@ -70,6 +70,43 @@ public class MapNode : IdObject, IGUIItem
     return areas;
   }
 
+  public MapNode? Find(string areaName)
+  {
+    if (Data == areaName)
+    {
+      return this;
+    }
+
+    foreach (var area in Areas)
+    {
+      var result = area.Find(areaName);
+      if (result is not null)
+      {
+        return result;
+      }
+    }
+    return null;
+  }
+
+  public MapNode? Find(int id)
+  {
+    if (Id == id)
+    {
+      return this;
+    }
+
+    foreach (var area in Areas)
+    {
+      var result = area.Find(id);
+      if (result is not null)
+      {
+        return result;
+      }
+    }
+
+    return null;
+  }
+
   public override string ToString()
   {
 

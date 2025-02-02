@@ -1,16 +1,19 @@
+using Utils;
+
 namespace Core;
 
 public enum GameState
 {
   Playing,
   End,
-  // Pause,
+  Pause,
 }
 
 public class Game
 {
   public readonly Setting setting = Setting.FromFile(Setting.SETTING_SAVE_PATH, new())!;
   public readonly Save save;
+  public readonly MapManager mapManager = new();
   public readonly Time time = new();
   public readonly Date date = new();
   public readonly GUI gui = new([]);
@@ -26,9 +29,11 @@ public class Game
       date,
       new GUIItem("天气", "晴朗"),
       new GUIItem("任务", "无"),
-      new GUIItem("位面", "主世界"),
+      // new GUIItem("位面", "主世界"),
+      mapManager,
       new GUIItem("阵营", "无"),
-      new GUIItem("地区", "华夏未央市市区北部"),
+      // new GUIItem("地区", "华夏未央市市区北部"),
+      mapManager.CurrentNode!,
       new GUIItem("势力", "华夏"),
       new GUIItem("场景", "市区广场"),
       new GUIItem("人物", "张三、李四、王五、赵六"),
@@ -37,29 +42,40 @@ public class Game
     ]);
   }
 
-  public Save LoadData()
-  {
-    var save = Save.LoadData(setting.DataSavePath);
-
-    if (save.Time is not null) time.ChangeTime(save.Time);
-    if (save.Date is not null) date.ChangeDate(save.Date);
-
-    return save;
-  }
-
   public void Start()
   {
     State = GameState.Playing;
 
     while (State != GameState.End)
     {
-      time.Tick();
-      gui.PrintUI();
-      Console.WriteLine("怎么做?");
+      if (State != GameState.Pause)
+      {
+        time.Tick();
+        gui.PrintUI();
+        Console.WriteLine("怎么做?");
+      }
       string input = string.Format($"{Console.ReadLine()}");
       if (input.Equals("quit", StringComparison.CurrentCultureIgnoreCase))
       {
         End();
+      }
+      else if (input.Equals("list", StringComparison.CurrentCultureIgnoreCase))
+      {
+        Console.WriteLine(string.Join("\n", mapManager.Root.ListAreas()));
+        State = GameState.Pause;
+      }
+      else if (input.StartsWith("goto", StringComparison.CurrentCultureIgnoreCase))
+      {
+        string[] args = input.Split("goto ");
+        if (args.Length > 1)
+        {
+          string position = args[1];
+          if (mapManager.GoTo(position))
+          {
+            gui.ChangeItem(mapManager.CurrentNode!);
+          }
+        }
+        State = GameState.Playing;
       }
       else if (input.Equals("start", StringComparison.CurrentCultureIgnoreCase))
       {
@@ -75,30 +91,36 @@ public class Game
     Console.WriteLine("游戏结束");
   }
 
+  public Save LoadData()
+  {
+    var save = Save.LoadData(setting.DataSavePath);
+
+    // load time and date
+    if (save.Time is not null) time.ChangeTime(save.Time);
+    if (save.Date is not null) date.ChangeDate(save.Date);
+
+    // load map
+    if (save.Map is not null) mapManager.LoadMap(save.Map);
+    else mapManager.LoadMap(DefaultData.MapNode);
+
+    // load current position
+    if (save.CurrentPosition is not null)
+    {
+      mapManager.GoTo(save.CurrentPosition.Data);
+    }
+
+    save.Map = mapManager.Root;
+
+
+    return save;
+  }
+
   public void SaveData()
   {
     setting.ToFile(Setting.SETTING_SAVE_PATH);
     save.Time = time.ToString();
     save.Date = date.ToString();
+    save.CurrentPosition = mapManager.CurrentNode;
     save.SaveData(setting.DataSavePath);
-
-    string saveMapPath = "tmp/map.json";
-    MapNode kf = new("开封郡");
-    var main = MapNode.FromFile<MapNode>(
-      saveMapPath,
-      new("主世界", [
-        new("紫微州", [
-          new("江南府", [
-            new("金陵郡")
-          ]),
-          new("应天府", [
-            kf
-          ])
-        ]),
-        new("太微州")
-      ]
-    ))!;
-
-    main.ToFile(saveMapPath);
   }
 }

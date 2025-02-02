@@ -26,6 +26,31 @@ public class GUI(List<IGUIItem> list)
     items.AddRange(list);
   }
 
+  public bool Contains(string label)
+  {
+    return items.Exists(item => item.Label == label);
+  }
+
+  public bool UseLabelChangeItem(string label, string data)
+  {
+    var item = new GUIItem(label, data);
+
+    return ChangeItem(item);
+  }
+
+  public bool ChangeItem(IGUIItem item)
+  {
+    int index = items.FindIndex(i => i.Label == item.Label);
+    if (index != -1)
+    {
+      items[index] = item;
+
+      return true;
+    }
+
+    return false;
+  }
+
   public void RemoveItem(string label)
   {
     items.RemoveAll(item => item.Label == label);

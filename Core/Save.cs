@@ -6,6 +6,8 @@ public class Save : Json<Save>
 {
   public string? Time { get; set; }
   public string? Date { get; set; }
+  public MapNode? Map { get; set; }
+  public MapNode? CurrentPosition { get; set; }
 
   public static Save LoadData(string path)
   {
