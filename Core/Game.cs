@@ -9,6 +9,8 @@ public enum GameState
 
 public class Game
 {
+  public readonly Setting setting = Setting.FromFile(Setting.SETTING_SAVE_PATH, new())!;
+  public readonly Save save;
   public readonly Time time = new();
   public readonly Date date = new();
   public readonly GUI gui = new([]);
@@ -16,6 +18,7 @@ public class Game
 
   public Game()
   {
+    save = LoadData();
     time.DayAdd = date.Increment;
 
     gui.Add([
@@ -32,6 +35,16 @@ public class Game
       new GUIItem("物品", "无"),
       new GUIItem("行为", "对话、查看"),
     ]);
+  }
+
+  public Save LoadData()
+  {
+    var save = Save.LoadData(setting.DataSavePath);
+
+    if (save.Time is not null) time.ChangeTime(save.Time);
+    if (save.Date is not null) date.ChangeDate(save.Date);
+
+    return save;
   }
 
   public void Start()
@@ -64,6 +77,9 @@ public class Game
 
   public void SaveData()
   {
-    // ...
+    setting.ToFile(Setting.SETTING_SAVE_PATH);
+    save.Time = time.ToString();
+    save.Date = date.ToString();
+    save.SaveData(setting.DataSavePath);
   }
 }
