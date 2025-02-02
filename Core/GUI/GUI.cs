@@ -2,8 +2,8 @@ namespace Core;
 
 public interface IGUIItem
 {
-  public string Label { get; set; }
-  public string Data { get; set; }
+  public string Label { get; }
+  public string Data { get; }
 }
 
 public class GUIItem(string label, string data) : IGUIItem
