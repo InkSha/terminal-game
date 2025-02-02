@@ -18,21 +18,13 @@ public class Json<T> where T : Json<T>
     return content;
   }
 
-  public static R? FromFile<R>(string filename, R? defaultValue = default) where R : T
+  public static R? FromJson<R>(string json, R? defaultValue = default) where R : T
   {
     try
     {
-      string json = File.ReadAllText(filename, System.Text.Encoding.UTF8);
-
       if (!string.IsNullOrEmpty(json))
       {
-        var obj = JsonSerializer.Deserialize<R>(json, serializerOptions);
-        // Using try-catch block
-        // If obj is null, it will throw an exception
-        // and print the error message in the catch block
-        // Finally, return the default value not obj
-        obj!.FromJsonFilePath = filename;
-        return obj;
+        return JsonSerializer.Deserialize<R>(json, serializerOptions);
       }
     }
     catch (Exception ex)
@@ -40,6 +32,21 @@ public class Json<T> where T : Json<T>
       Console.WriteLine($"Error reading or deserializing file: {ex.Message}");
     }
 
+    return defaultValue;
+  }
+
+  public static T? FromJson(string json, T? defaultValue = default)
+  {
+    return FromJson<T>(json, defaultValue);
+  }
+
+  public static R? FromFile<R>(string filename, R? defaultValue = default) where R : T
+  {
+    if (File.Exists(filename))
+    {
+      string content = File.ReadAllText(filename, System.Text.Encoding.UTF8);
+      return FromJson(content, defaultValue);
+    }
     return defaultValue;
   }
 
