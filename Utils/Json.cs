@@ -9,14 +9,16 @@ public class Json<T> where T : Json<T>
     IncludeFields = true
   };
 
+  private string FromJsonFilePath = "";
+
   public string ToJson(JsonSerializerOptions? options = null)
   {
     options ??= serializerOptions;
-    string content = JsonSerializer.Serialize((T)this, options);
+    string content = JsonSerializer.Serialize(this, GetType(), options);
     return content;
   }
 
-  public static T? FromFile(string filename, T? defaultValue = null)
+  public static R? FromFile<R>(string filename, R? defaultValue = default) where R : T
   {
     try
     {
@@ -24,7 +26,13 @@ public class Json<T> where T : Json<T>
 
       if (!string.IsNullOrEmpty(json))
       {
-        return JsonSerializer.Deserialize<T>(json, serializerOptions);
+        var obj = JsonSerializer.Deserialize<R>(json, serializerOptions);
+        // Using try-catch block
+        // If obj is null, it will throw an exception
+        // and print the error message in the catch block
+        // Finally, return the default value not obj
+        obj!.FromJsonFilePath = filename;
+        return obj;
       }
     }
     catch (Exception ex)
@@ -35,12 +43,26 @@ public class Json<T> where T : Json<T>
     return defaultValue;
   }
 
+  public static T? FromFile(string filename, T? defaultValue = default)
+  {
+    return FromFile<T>(filename, defaultValue);
+  }
+
+  public void ToFile()
+  {
+    if (FromJsonFilePath == "")
+    {
+      throw new Exception("FromJsonFilePath is empty");
+    }
+    ToFile(FromJsonFilePath);
+  }
+
   public void ToFile(string name)
   {
     try
     {
       string content = ToJson();
-      Console.WriteLine(content);
+      // Console.WriteLine(content);
       File.WriteAllText(name, content, System.Text.Encoding.UTF8);
     }
     catch (Exception ex)
