@@ -81,5 +81,24 @@ public class Game
     save.Time = time.ToString();
     save.Date = date.ToString();
     save.SaveData(setting.DataSavePath);
+
+    string saveMapPath = "tmp/map.json";
+    MapNode kf = new("开封郡");
+    var main = MapNode.FromFile<MapNode>(
+      saveMapPath,
+      new("主世界", [
+        new("紫微州", [
+          new("江南府", [
+            new("金陵郡")
+          ]),
+          new("应天府", [
+            kf
+          ])
+        ]),
+        new("太微州")
+      ]
+    ))!;
+
+    main.ToFile(saveMapPath);
   }
 }
