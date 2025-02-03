@@ -6,17 +6,25 @@ public class MapManager : IGUIItem
   public string Label => "位面";
   public string Data => Root?.Data ?? "Unknown World";
   public MapNode? CurrentNode { get; set; }
+  public GUIItem Position { get; }
 
   public MapManager(MapNode? root = null)
   {
     Root = root ?? new MapNode("root");
     CurrentNode = Root;
+    Position = new GUIItem(Label, CurrentNode.Data);
   }
 
   private void LoadMapNode(MapNode root)
   {
     Root = root;
-    CurrentNode = Root;
+    ChangeCurrentNode(Root);
+  }
+
+  private void ChangeCurrentNode(MapNode node)
+  {
+    CurrentNode = node;
+    Position.Data = CurrentNode.Data;
   }
 
   public void LoadMap(MapNode root)
@@ -48,7 +56,7 @@ public class MapManager : IGUIItem
     {
       return false;
     }
-    CurrentNode = node;
+    ChangeCurrentNode(node);
     return true;
   }
 
@@ -59,13 +67,13 @@ public class MapManager : IGUIItem
     {
       return false;
     }
-    CurrentNode = node;
+    ChangeCurrentNode(node);
     return true;
   }
 
   public bool GoTo(MapNode node)
   {
-    CurrentNode = node;
+    ChangeCurrentNode(node);
     return true;
   }
 }

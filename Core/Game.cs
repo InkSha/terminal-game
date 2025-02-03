@@ -33,7 +33,7 @@ public class Game
       mapManager,
       new GUIItem("阵营", "无"),
       // new GUIItem("地区", "华夏未央市市区北部"),
-      mapManager.CurrentNode!,
+      mapManager.Position,
       new GUIItem("势力", "华夏"),
       new GUIItem("场景", "市区广场"),
       new GUIItem("人物", "张三、李四、王五、赵六"),
