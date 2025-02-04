@@ -32,7 +32,6 @@ public class Game
       // new GUIItem("位面", "主世界"),
       mapManager,
       new GUIItem("阵营", "无"),
-      // new GUIItem("地区", "华夏未央市市区北部"),
       mapManager.Position,
       new GUIItem("势力", "华夏"),
       new GUIItem("场景", "市区广场"),
@@ -76,6 +75,10 @@ public class Game
           }
         }
         State = GameState.Playing;
+      }
+      else if (input.Equals("cw", StringComparison.CurrentCultureIgnoreCase))
+      {
+        mapManager.Root.CreateMap("tmp");
       }
       else if (input.Equals("start", StringComparison.CurrentCultureIgnoreCase))
       {

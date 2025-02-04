@@ -46,6 +46,24 @@ public class MapNode : IdObject, IGUIItem
     });
   }
 
+  public bool CreateMap(string? baseDir = null)
+  {
+    string parent = string.Join('/', ToRoot());
+    string path = baseDir is not null
+      ? string.Join('/', [baseDir, parent])
+      : parent;
+
+    if (!Directory.Exists(path))
+    {
+      Directory.CreateDirectory(path);
+    }
+    foreach (var area in Areas)
+    {
+      area.CreateMap(baseDir);
+    }
+    return Directory.Exists(path);
+  }
+
   public List<string> ListAreas()
   {
     List<string> areas = [];
@@ -61,12 +79,14 @@ public class MapNode : IdObject, IGUIItem
 
   public List<string> ToRoot()
   {
-    List<string> areas = [Data];
+    List<string> areas = [];
 
     if (Parent is not null)
     {
       areas.AddRange(Parent.ToRoot());
     }
+
+    areas.Add(Data);
     return areas;
   }
 
