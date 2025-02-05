@@ -52,10 +52,11 @@ public class ItemAttribute(string Name, int? Value, string? Data, string? Descri
   public string? Description { get; set; } = Description;
 }
 
-public class Items() : IdObject(ITEM_LABEL), IItems
+public class Items(string name) : IdObject(ITEM_LABEL), IItems
 {
   public const string ITEM_LABEL = "物品";
-  public string Name { get; set; } = "";
+  public const string ITEM_FILE_EXTEND = ".item.data.json";
+  public string Name { get; set; } = name;
   public string Data => Name;
   public string Description { get; set; } = "";
   public string Icon { get; set; } = "";
@@ -72,5 +73,17 @@ public class Items() : IdObject(ITEM_LABEL), IItems
   public bool CheckType(ItemType type)
   {
     return (Type & type) == type;
+  }
+
+  public bool CreateItem(string path = ".")
+  {
+    var file = $"{path}/{Data}{ITEM_FILE_EXTEND}";
+
+    if (!File.Exists(file))
+    {
+      ToFile(file);
+    }
+
+    return File.Exists(file);
   }
 }

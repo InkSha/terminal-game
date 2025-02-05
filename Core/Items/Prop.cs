@@ -12,7 +12,7 @@ public interface IProp
   public int CD { get; set; }
 }
 
-public class Props : Items, IProp
+public class Props(string name) : Items(name), IProp
 {
   public bool CanUse { get; set; } = false;
   public bool UnlimitedUse { get; set; } = false;

@@ -5,6 +5,8 @@ public class MapNode : IdObject, IGUIItem
   public const string MAP_NODE_LABEL = "地点";
   private MapNode? Parent { get; set; } = null;
   public List<MapNode> Areas { get; } = [];
+  public List<Build> Builds { get; set; } = [];
+  public List<Items> Items { get; set; } = [];
   public string Data { get; set; }
 
   public MapNode(string Data, List<MapNode>? Areas = null) : base(MAP_NODE_LABEL)
@@ -46,6 +48,36 @@ public class MapNode : IdObject, IGUIItem
     });
   }
 
+  public void AddBuild(Build build)
+  {
+    Builds.Add(build);
+  }
+
+  public void AddBuilds(List<Build> builds)
+  {
+    Builds.AddRange(builds);
+  }
+
+  public void RemoveBuild(Build build)
+  {
+    Builds.Remove(build);
+  }
+
+  public void AddItem(Items item)
+  {
+    Items.Add(item);
+  }
+
+  public void AddItems(List<Items> items)
+  {
+    Items.AddRange(items);
+  }
+
+  public void RemoveItem(Items item)
+  {
+    Items.Remove(item);
+  }
+
   public bool CreateMap(string? baseDir = null)
   {
     string parent = string.Join('/', ToRoot());
@@ -57,10 +89,21 @@ public class MapNode : IdObject, IGUIItem
     {
       Directory.CreateDirectory(path);
     }
+    foreach (var build in Builds)
+    {
+      build.CreateBuild(path);
+    }
+
+    foreach (var item in Items)
+    {
+      item.CreateItem(path);
+    }
+
     foreach (var area in Areas)
     {
       area.CreateMap(baseDir);
     }
+
     return Directory.Exists(path);
   }
 

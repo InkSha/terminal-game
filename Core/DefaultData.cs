@@ -6,10 +6,25 @@ public static class DefaultData
     new("North Continent", [
       new("Black Forest", [
         new("Edge Town", [
-        ])
+        ]){
+          Builds = [
+            new("Town Center"){
+              Items = [
+                new("Wooden Sword"),
+                new("Wooden Shield"),
+                new("Wooden Axe"),
+              ]
+            },
+            new("Blacksmith"),
+          ],
+        }
       ]),
       new("Mountains", [
-        new("Mount Doom")
+        new("Mount Doom"){
+          Items = [
+            new("Fire Sword"),
+          ]
+        }
       ])
     ]),
   ]);
