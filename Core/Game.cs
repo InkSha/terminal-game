@@ -1,5 +1,3 @@
-using Utils;
-
 namespace Core;
 
 public enum GameState
@@ -13,6 +11,7 @@ public class Game
 {
   public readonly Setting setting = Setting.FromFile(Setting.SETTING_SAVE_PATH, new())!;
   public readonly Save save;
+  public readonly Command command = new();
   public readonly MapManager mapManager = new();
   public readonly Time time = new();
   public readonly Date date = new();
@@ -39,6 +38,45 @@ public class Game
       new GUIItem("物品", "无"),
       new GUIItem("行为", "对话、查看"),
     ]);
+
+    command.RegisterCommands([
+      new CommandItem("quit", "退出游戏", new(){
+        ActionCallbackHandler = (keyrowd, args) => End()
+      }, "q"),
+      new CommandItem("list", "查看地点列表", new(){
+        ActionCallbackHandler = (keywrod, args) =>
+        {
+          Console.WriteLine(string.Join("\n", mapManager.Root.ListAreas()));
+          State = GameState.Pause;
+        }
+      }, "ls"),
+      new CommandItem("goto", "前往地点", new(){
+         ActionCallbackHandler = (keywrod, args) =>
+        {
+          if (args.Length > 1)
+          {
+            string position = args[1];
+            if (mapManager.GoTo(position))
+            {
+              gui.ChangeItem(mapManager.CurrentNode!);
+            }
+          }
+          State = GameState.Playing;
+        }
+      }),
+      new CommandItem("createword", "创建世界", new(){
+        ActionCallbackHandler = (keywrod, args) =>
+        {
+          mapManager.Root.CreateMap("tmp");
+        }
+      }, "cw", "cworld"),
+      new CommandItem("start", "开始游戏", new(){
+        ActionCallbackHandler = (keywrod, args) =>
+        {
+          State = GameState.Playing;
+        }
+      }),
+    ]);
   }
 
   public void Start()
@@ -53,37 +91,7 @@ public class Game
         gui.PrintUI();
         Console.WriteLine("怎么做?");
       }
-      string input = string.Format($"{Console.ReadLine()}");
-      if (input.Equals("quit", StringComparison.CurrentCultureIgnoreCase))
-      {
-        End();
-      }
-      else if (input.Equals("list", StringComparison.CurrentCultureIgnoreCase))
-      {
-        Console.WriteLine(string.Join("\n", mapManager.Root.ListAreas()));
-        State = GameState.Pause;
-      }
-      else if (input.StartsWith("goto", StringComparison.CurrentCultureIgnoreCase))
-      {
-        string[] args = input.Split("goto ");
-        if (args.Length > 1)
-        {
-          string position = args[1];
-          if (mapManager.GoTo(position))
-          {
-            gui.ChangeItem(mapManager.CurrentNode!);
-          }
-        }
-        State = GameState.Playing;
-      }
-      else if (input.Equals("cw", StringComparison.CurrentCultureIgnoreCase))
-      {
-        mapManager.Root.CreateMap("tmp");
-      }
-      else if (input.Equals("start", StringComparison.CurrentCultureIgnoreCase))
-      {
-        State = GameState.Playing;
-      }
+      command.ExecuteCommand();
     }
   }
 
