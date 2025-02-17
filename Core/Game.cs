@@ -55,7 +55,7 @@ public class Game
         {
           if (args.Length > 1)
           {
-            string position = args[1];
+            string position = string.Join(" ", args[1..args.Length]);
             if (mapManager.GoTo(position))
             {
               gui.ChangeItem(mapManager.CurrentNode!);
