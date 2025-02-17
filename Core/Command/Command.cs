@@ -74,11 +74,34 @@ public class Command
     return results;
   }
 
+  public void Help()
+  {
+    foreach (var item in Commands)
+    {
+      int terminalWidth = Console.WindowWidth / 2;
+      string space = new(' ', terminalWidth - item.Keyword.Length - item.Description.Length);
+      Console.WriteLine($"{item.Keyword}{space}{item.Description}");
+
+      if (item.Alias.Length > 0)
+      {
+        Console.WriteLine($"\talias:  {string.Join("、", item.Alias)}");
+      }
+    }
+  }
+
   public object? ExecuteCommand()
   {
     string input = ReadInput();
     string[] args = input.Split(' ');
     string keyword = args[0];
+
+    if (keyword.StartsWith("help", StringComparison.OrdinalIgnoreCase) || keyword == "?")
+    {
+      Help();
+      input = ReadInput();
+      args = input.Split(' ');
+      keyword = args[0];
+    }
 
     CommandItem? command = Commands.FirstOrDefault(command =>
     {
