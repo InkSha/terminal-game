@@ -15,6 +15,10 @@ public class GUIItem(string label, string data) : IGUIItem
 public class GUI(List<IGUIItem> list)
 {
   private readonly List<IGUIItem> items = list;
+  public static int Width { get; set; } = Console.WindowWidth;
+  public static int Height { get; set; } = Console.WindowHeight;
+  public static int Left { get; set; } = Console.WindowLeft;
+  public static int Top { get; set; } = Console.WindowTop;
 
   public void Add(IGUIItem item)
   {
@@ -69,10 +73,10 @@ public class GUI(List<IGUIItem> list)
 
   public void PrintUI()
   {
-    Console.Clear();
+    Print.Clear();
     items.ForEach(item =>
     {
-      Console.WriteLine($"[{item.Label}]: {item.Data}");
+      Print.PrintText($"[{item.Label}]: {item.Data}");
     });
   }
 }

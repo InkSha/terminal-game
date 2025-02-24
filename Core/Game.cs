@@ -7,6 +7,10 @@ public enum GameState
   Pause,
 }
 
+// TODO
+// first. apply build and item to map
+// second. add player and life
+
 public class Game
 {
   public readonly Setting setting = Setting.FromFile(Setting.SETTING_SAVE_PATH, new())!;
@@ -46,7 +50,7 @@ public class Game
       new CommandItem("list", "查看地点列表", new(){
         ActionCallbackHandler = (keywrod, args) =>
         {
-          Console.WriteLine(string.Join("\n", mapManager.Root.ListAreas()));
+          Print.PrintText(mapManager.Root.ListAreas());
           State = GameState.Pause;
         }
       }, "ls"),
@@ -89,7 +93,7 @@ public class Game
       {
         time.Tick();
         gui.PrintUI();
-        Console.WriteLine("怎么做?");
+        Print.PrintText("怎么做?");
       }
       command.ExecuteCommand();
     }
@@ -99,7 +103,7 @@ public class Game
   {
     State = GameState.End;
     SaveData();
-    Console.WriteLine("游戏结束");
+    Print.PrintText("游戏结束");
   }
 
   public Save LoadData()
@@ -117,6 +121,7 @@ public class Game
     // load current position
     if (save.CurrentPosition is not null)
     {
+      Print.PrintText($"当前位置: {save.CurrentPosition.Data}");
       mapManager.GoTo(save.CurrentPosition.Data);
     }
 

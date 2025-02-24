@@ -29,7 +29,7 @@ public class Json<T> where T : Json<T>
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"Error reading or deserializing file: {ex.Message}");
+      Print.PrintText($"Error reading or deserializing file: {ex.Message}");
     }
 
     return defaultValue;
@@ -69,12 +69,11 @@ public class Json<T> where T : Json<T>
     try
     {
       string content = ToJson();
-      // Console.WriteLine(content);
       File.WriteAllText(name, content, System.Text.Encoding.UTF8);
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"Error writing file: {ex.Message}");
+      Print.PrintText($"Error writing file: {ex.Message}");
     }
   }
 

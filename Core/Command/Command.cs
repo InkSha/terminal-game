@@ -78,13 +78,13 @@ public class Command
   {
     foreach (var item in Commands)
     {
-      int terminalWidth = Console.WindowWidth / 2;
+      int terminalWidth = GUI.Width / 2;
       string space = new(' ', terminalWidth - item.Keyword.Length - item.Description.Length);
-      Console.WriteLine($"{item.Keyword}{space}{item.Description}");
+      Print.PrintText($"{item.Keyword}{space}{item.Description}");
 
       if (item.Alias.Length > 0)
       {
-        Console.WriteLine($"\talias:  {string.Join("、", item.Alias)}");
+        Print.PrintText($"\talias:  {string.Join("、", item.Alias)}");
       }
     }
   }
@@ -122,13 +122,13 @@ public class Command
   {
     foreach (var item in Commands)
     {
-      Console.WriteLine($"{item.Keyword}: {item.Description}");
+      Print.PrintText($"{item.Keyword}: {item.Description}");
     }
   }
 
   public string ReadInput()
   {
-    string input = string.Format($"{Console.ReadLine()}");
+    string input = string.Format($"{Input.ReadInput()}");
     History.Add(input);
     return input;
   }
