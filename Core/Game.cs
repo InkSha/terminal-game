@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 namespace Core;
 
 public enum GameState
@@ -11,7 +13,7 @@ public enum GameState
 // first. apply build and item to map
 // second. add player and life
 
-public class Game
+public partial class Game
 {
   public readonly Setting setting = Setting.FromFile(Setting.SettingSavePath, new())!;
   public readonly Save save;
@@ -80,6 +82,69 @@ public class Game
           State = GameState.Playing;
         }
       }),
+      new CommandItem("look", "查看周围", new() {
+        ActionCallbackHandler = (keywrod, args) => {
+          var areaFlag = "area";
+          var buildFlag = "build";
+          var itemFlag = "item";
+          if (args.Length == 0) {
+            args = [areaFlag, buildFlag, itemFlag];
+          }
+          if (args.Contains(areaFlag)) {
+            var areas = mapManager.CurrentNode?.Areas;
+            var parent = mapManager.CurrentNode?.GetParent();
+            areas ??= [];
+
+            if (parent is not null)
+            {
+              areas.Add(parent);
+            }
+
+            if (areas.Count == 0)
+            {
+              Print.PrintText("附近没有地点");
+            }
+            else
+            {
+              Print.PrintText("附近有以下地点:");
+              foreach (var area in areas) {
+                Print.PrintText($"  {area.Data}");
+              }
+            }
+          }
+
+          if (args.Contains(buildFlag)) {
+            var builds = mapManager.CurrentNode!.ListBuilds();
+            if (builds.Count == 0)
+            {
+              Print.PrintText("附近没有建筑");
+            }
+            else
+            {
+              Print.PrintText("附近有以下建筑:");
+              foreach (var build in builds) {
+                Print.PrintText($"  {build}");
+              }
+            }
+          }
+
+          if (args.Contains(itemFlag)) {
+            var items = mapManager.CurrentNode!.ListItems();
+            if (items.Count == 0)
+            {
+              Print.PrintText("附近没有物品");
+            }
+            else
+            {
+              Print.PrintText("附近有以下物品:") ;
+              foreach (var item in items) {
+                Print.PrintText($"  {item}");
+              }
+            }
+          }
+          State = GameState.Pause;
+        }
+      })
     ]);
   }
 

@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Core;
 
 public class MapNode : IdObject, IGUIItem
 {
   public const string MAP_NODE_LABEL = "地点";
+  [JsonIgnore]
   private MapNode? Parent { get; set; } = null;
   public List<MapNode> Areas { get; } = [];
   public List<Build> Builds { get; set; } = [];
@@ -16,6 +19,11 @@ public class MapNode : IdObject, IGUIItem
     {
       AddAreas(Areas);
     }
+  }
+
+  public MapNode? GetParent()
+  {
+    return Parent;
   }
 
   public void AddArea(MapNode area)
@@ -118,6 +126,30 @@ public class MapNode : IdObject, IGUIItem
 
     areas.Add(ToString());
     return areas;
+  }
+
+  public List<string> ListBuilds()
+  {
+    List<string> builds = [];
+
+    foreach (var build in Builds)
+    {
+      builds.Add(build.Data);
+    }
+
+    return builds;
+  }
+
+  public List<string> ListItems()
+  {
+    List<string> items = [];
+
+    foreach (var item in Items)
+    {
+      items.Add(item.Data);
+    }
+
+    return items;
   }
 
   public List<string> ToRoot()

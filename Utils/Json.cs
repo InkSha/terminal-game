@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Utils;
 
@@ -6,7 +7,8 @@ public class Json<T> where T : Json<T>
 {
   private static readonly JsonSerializerOptions serializerOptions = new()
   {
-    IncludeFields = true
+    IncludeFields = true,
+    ReferenceHandler = ReferenceHandler.Preserve,
   };
 
   private string FromJsonFilePath = "";
