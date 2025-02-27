@@ -59,9 +59,9 @@ public class Build : IdObject, IBuild
   public BuildStatus Status { get; set; } = BuildStatus.Uncreate;
   public List<string> Tags { get; set; } = [];
 
-  public Build(string name) : base(BUILD_LABEL)
+  public Build(string data) : base(BUILD_LABEL)
   {
-    Data = name;
+    Data = data;
   }
 
   public bool CreateBuild(string path = ".")

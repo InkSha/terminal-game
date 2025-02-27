@@ -13,7 +13,7 @@ public enum GameState
 
 public class Game
 {
-  public readonly Setting setting = Setting.FromFile(Setting.SETTING_SAVE_PATH, new())!;
+  public readonly Setting setting = Setting.FromFile(Setting.SettingSavePath, new())!;
   public readonly Save save;
   public readonly Command command = new();
   public readonly MapManager mapManager = new();
@@ -55,7 +55,7 @@ public class Game
         }
       }, "ls"),
       new CommandItem("goto", "前往地点", new(){
-         ActionCallbackHandler = (keywrod, args) =>
+        ActionCallbackHandler = (keywrod, args) =>
         {
           if (args.Length > 1)
           {
@@ -108,7 +108,7 @@ public class Game
 
   public Save LoadData()
   {
-    var save = Save.LoadData(setting.DataSavePath);
+    var save = Save.LoadData(Setting.DataSavePath);
 
     // load time and date
     if (save.Time is not null) time.ChangeTime(save.Time);
@@ -133,10 +133,10 @@ public class Game
 
   public void SaveData()
   {
-    setting.ToFile(Setting.SETTING_SAVE_PATH);
+    setting.ToFile(Setting.SettingSavePath);
     save.Time = time.ToString();
     save.Date = date.ToString();
     save.CurrentPosition = mapManager.CurrentNode;
-    save.SaveData(setting.DataSavePath);
+    save.SaveData(Setting.DataSavePath);
   }
 }
