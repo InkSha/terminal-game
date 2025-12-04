@@ -1,8 +1,4 @@
-use map::area;
 use std::io::{self, Write};
-
-mod map;
-mod shared;
 
 // 地图为文件结构形式
 // e.g. 主世界/北部大陆/人类帝国/边疆/边境城镇
@@ -10,8 +6,6 @@ mod shared;
 // e.g. /../边境城镇/酒馆.build, /../边境城镇/酒馆/服务员.npc, /../边境城镇/城门.build
 
 fn main() {
-    area::Area::create_from_file("data.json");
-
     loop {
         // break;
         print!("> ");
