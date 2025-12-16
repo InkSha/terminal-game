@@ -1,5 +1,6 @@
 use crate::{
     files::files::create_dir,
+    output::print::output,
     shared::{error::BaseError, json::JSON},
 };
 use serde::{Deserialize, Serialize};
@@ -43,7 +44,11 @@ impl Area {
         let parent = parent.into();
         if let Some(p) = Path::new(parent.as_str()).join(&self.name).to_str() {
             if let Err(e) = create_dir(p) {
-                eprintln!("Error creating directory {}: {}", p, e.get_message());
+                output(format!(
+                    "Error creating directory {}: {}",
+                    p,
+                    e.get_message()
+                ));
             } else {
                 for child in &self.childrens {
                     child.create(p);

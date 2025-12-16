@@ -1,9 +1,10 @@
 use std::io::{self, Write};
 
-use crate::map::area::Area;
+use crate::{map::area::Area, output::print::output};
 
 mod files;
 mod map;
+mod output;
 mod shared;
 
 fn init() -> bool {
@@ -41,12 +42,12 @@ fn main() {
     let init_status = init();
 
     if !init_status {
-        println!("初始化失败");
+        output("初始化失败");
     }
 
     loop {
         // break;
-        print!("> ");
+        output("> ");
         io::stdout().flush().unwrap(); // 刷新输出以显示提示
         let mut input = String::new();
         io::stdin().read_line(&mut input).expect("无法读取输入");
@@ -54,14 +55,14 @@ fn main() {
         let command = input.trim();
 
         match command {
-            "look" => println!("你环顾四周，看到了一片荒野。"),
-            "north" => println!("你向北移动了一段距离。"),
+            "look" => output("你环顾四周，看到了一片荒野。"),
+            "north" => output("你向北移动了一段距离。"),
             "init" => {}
             "quit" => {
-                println!("退出...");
+                output("退出...");
                 break;
             }
-            _ => println!("无效命令，请再试一次。"),
+            _ => output("无效命令，请再试一次。"),
         }
     }
 }
