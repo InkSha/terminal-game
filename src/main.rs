@@ -1,11 +1,49 @@
 use std::io::{self, Write};
 
-// 地图为文件结构形式
-// e.g. 主世界/北部大陆/人类帝国/边疆/边境城镇
-// 实体则以文件形式存储
-// e.g. /../边境城镇/酒馆.build, /../边境城镇/酒馆/服务员.npc, /../边境城镇/城门.build
+use crate::map::area::Area;
+
+mod files;
+mod map;
+mod shared;
+
+fn init() -> bool {
+    let mut main_land = Area::new("main land");
+    let mut white_area = Area::new("white area");
+    let mut black_area = Area::new("black area");
+    let mut red_area = Area::new("red area");
+
+    white_area.add_childrens(vec![
+        Area::new("kingdom"),
+        Area::new("empire"),
+        Area::new("union"),
+    ]);
+
+    black_area.add_childrens(vec![
+        Area::new("old forest"),
+        Area::new("died plain"),
+        Area::new("black sea"),
+    ]);
+
+    red_area.add_childrens(vec![
+        Area::new("blood mountain"),
+        Area::new("snow"),
+        Area::new("desert"),
+    ]);
+
+    main_land.add_childrens(vec![white_area, black_area, red_area]);
+
+    main_land.init_area("./map");
+
+    return true;
+}
 
 fn main() {
+    let init_status = init();
+
+    if !init_status {
+        println!("初始化失败");
+    }
+
     loop {
         // break;
         print!("> ");
@@ -20,7 +58,7 @@ fn main() {
             "north" => println!("你向北移动了一段距离。"),
             "init" => {}
             "quit" => {
-                println!("退出游戏...");
+                println!("退出...");
                 break;
             }
             _ => println!("无效命令，请再试一次。"),
